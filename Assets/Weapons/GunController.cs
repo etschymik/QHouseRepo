@@ -4,18 +4,28 @@ using UnityEngine;
 
 public class GunController : MonoBehaviour
 {
-    // public variables
-    public GameObject firePoint;
-    public GameObject Bullet;
-    public int bulletSpeed;
+    public float rotZ;
 
-    // Update is called once per frame
+    // private variables for weapon rotation
+    private Camera mainCam;
+    private Vector3 mousePos;
+
+    private void Start()
+    {
+        mainCam = GameObject.FindGameObjectWithTag("MainCamera").GetComponent<Camera>();
+    }
+
     void Update()
     {
-        if (Input.GetMouseButtonDown(0))
-        {
-            GameObject newBullet = Instantiate(Bullet, firePoint.transform.position, Quaternion.identity);
-            newBullet.GetComponent<Rigidbody2D>().AddForce(bulletSpeed * Vector2.right);
-        }
+        WeaponRotation();
+    }
+
+    void WeaponRotation()
+    {
+        // gets direction of gun from mouse
+        mousePos = mainCam.ScreenToWorldPoint(Input.mousePosition);
+        Vector3 rotation = mousePos - transform.position;
+        rotZ = Mathf.Atan2(rotation.y, rotation.x) * Mathf.Rad2Deg;
+        transform.rotation = Quaternion.Euler(0, 0, rotZ);
     }
 }
